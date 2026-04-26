@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdMarket_Coin</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* REKLAMA SAHIFASI UCHUN YANGI STILLAR */
+        .ad-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .ad-image-slot {
+            width: 100%;
+            min-height: 180px;
+            background: #1e293b;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .ad-image-slot img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .ad-title {
+            color: var(--main-blue);
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .ad-description {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        :root {
+            --bg-dark: #020617;
+            --card-bg: #0f172a;
+            --border-color: #1e293b;
+            --text-secondary: #64748b;
+            --main-blue: #38bdf8;
+            --accent-pink: #f472b6;
+            --gold: #fbbf24;
+            --yum-orange: #ff6b35;
+            --yum-dark: #d84315;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 10px;
+            padding-bottom: 90px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* BUYURTMALAR DIZAYNI */
+        .order-card {
+            background: #161e2e;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            text-align: left;
+        }
+
+        .order-id {
+            color: var(--accent-pink);
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            opacity: 0.7;
+        }
+
+        .order-title {
+            color: var(--accent-pink);
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .order-link {
+            color: #94a3b8;
+            font-size: 11px;
+            margin: 5px 0;
+            word-break: break-all;
+            display: block;
+            text-decoration: none;
+        }
+
+        .order-info {
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .order-status {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--main-blue);
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            width: 85%;
+            max-width: 350px;
+            padding: 25px;
+            border-radius: 25px;
+            text-align: center;
+            border: 1px solid var(--main-blue);
+            position: relative;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* AUTH */
+        #auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            color: var(--main-blue);
+            font-weight: bold;
+            font-size: 20px;
+            text-transform: uppercase;
+        }
+
+        .bal-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* UI ELEMENTS */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .sub-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            background: var(--card-bg);
+            padding: 5px;
+            border-radius: 15px;
+        }
+
+        .sub-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .sub-btn.active {
+            background: var(--main-blue);
+            color: #000;
+            font-weight: bold;
+        }
+
+        .task-card {
+            background: var(--card-bg);
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-action {
+            padding: 10px 18px;
+            border-radius: 12px;
+            border: none;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-go {
+            background: #1e293b;
+            color: var(--main-blue);
+            border: 1px solid var(--main-blue);
+        }
+
+        .btn-check {
+            background: var(--main-blue);
+            color: #000;
+        }
+
+        .btn-main {
+            width: 100%;
+            background: var(--main-blue);
+            color: black;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            background: #0b1120;
+            border: 1px solid var(--border-color);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--main-blue);
+        }
+
+        /* REKCHI KOD DIZAYNI */
+        .invite-card {
+            background: #161e2e;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .code-display {
+            background: #20161f;
+            border: 1px solid #3e2b3c;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 5px;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            display: inline-block;
+            min-width: 150px;
+        }
+
+        /* PROFIL */
+        .profile-header {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .avatar-box {
+            width: 90px;
+            height: 90px;
+            margin: 0 auto 10px;
+            border-radius: 50%;
+            border: 3px solid var(--main-blue);
+            overflow: hidden;
+            background: #1e293b;
+            padding: 3px;
+        }
+
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .menu-item {
+            background: var(--card-bg);
+            padding: 18px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        /* FOOTER */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            border-top: 1px solid var(--border-color);
+            padding: 12px 0;
+            z-index: 500;
+        }
+
+        .nav-item {
+            flex: 1;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .nav-item.active {
+            color: var(--main-blue);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* AUTH LOGO CONTAINER */
+        .auth-logo-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 20px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .auth-logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* SPLASH SCREEN */
+        .splash-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .splash-logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .splash-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .splash-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .progress-container {
+            width: 200px;
+            height: 10px;
+            background-color: #1e293b;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--main-blue);
+            transition: width 0.5s;
+        }
+
+        .loading-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-top: 10px;
+        }
+
+        /* PROFILE NAVIGATION */
+        .profile-nav {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 5px;
+            margin: 20px 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .profile-nav-item:hover {
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .profile-nav-item.active {
+            background: var(--main-blue);
+            color: #000;
+        }
+
+        .profile-nav-icon {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .profile-nav-text {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* BOOST STYLES */
+        .boost-section {
+            margin-bottom: 15px;
+        }
+
+        .boost-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .boost-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .btn-boost {
+            background: var(--yum-orange);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-boost:hover {
+            background: #e67e22;
+            transform: translateY(-1px);
+        }
+
+        /* BOOST ORDER MODAL STYLES */
+        .service-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .service-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .service-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .service-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .service-price {
+            font-size: 12px;
+            color: var(--yum-orange);
+        }
+
+        .service-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .service-controls input {
+            width: 60px;
+            text-align: center;
+            padding: 5px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background: var(--bg-dark);
+            color: white;
+        }
+
+        .btn-minus,
+        .btn-plus {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 5px;
+            background: var(--main-blue);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-minus:hover,
+        .btn-plus:hover {
+            background: #2980b9;
+        }
+
+        /* Clicker uchun maxsus stillar */
+        .clicker-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .coin-wrapper {
+            position: relative;
+            width: 320px;
+            /* 250px dan 320px ga kattalashtirildi */
+            height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+            margin: 20px auto;
+            /* Markazda turishi uchun */
+            touch-action: manipulation;
+            /* Mobil qurilmalarda tez bosish uchun */
+        }
+
+        .coin-wrapper:active {
+            transform: scale(0.92);
+            /* Bosilganda sezilarliroq qisqarish */
+        }
+
+        .main-coin-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Tilla rang porlash effekti */
+            filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.6));
+        }
+
+        .tap-effect {
+            position: absolute;
+            color: var(--gold);
+            font-size: 24px;
+            font-weight: bold;
+            pointer-events: none;
+            animation: tap-up 0.8s ease-out forwards;
+        }
+
+        @keyframes tap-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-100px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="auth-overlay">
+        <div class="splash-screen">
+            <div class="splash-logo">
+                <img src="ff319a37-9e44-46c7-8f30-4ff760054484.png" alt="AdMarket_Coin Logo">
+            </div>
+            <h1 class="splash-title">AdMarket_Coin</h1>
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+            <div class="loading-text">YUKLANMOQDA...</div>
+        </div>
+    </div>
+
+    <div id="orders-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeOrders()">&times;</span>
+            <h3 style="color: var(--main-blue); margin-bottom: 20px;">BUYURTMALARIM</h3>
+            <div id="orders-list">
+                <p style="color: var(--text-secondary); font-size: 13px;">Hozircha buyurtmalar yo'q</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="exchange-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeExchange()">&times;</span>
+            <h3 style="color: var(--yum-orange);">🔄 ALMASHTIRISH</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">900 💎 Olmosni 45 🪙 Coin ga
+                almashtirasizmi?</p>
+            <button class="btn-main" onclick="exchangeDiamonds()">TASDIQLASH</button>
+        </div>
+    </div>
+
+    <div id="transfer-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTransfer()">&times;</span>
+            <h3 style="color: var(--accent-pink);">💎 OLMOS YUBORISH</h3>
+            <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">QABUL QILUVCHI TAKLIF KODI
+            </p>
+            <input type="text" id="target-code" placeholder="Masalan: ABCD12" maxlength="6"
+                style="text-transform: uppercase;">
+            <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 5px;">OLMOS MIQDORI (MIN 50)</p>
+            <input type="number" id="transfer-amount" placeholder="50">
+            <button class="btn-main" onclick="sendDiamonds()">YUBORISH</button>
+        </div>
+    </div>
+
+    <div id="promo-referral-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeReferral()">&times;</span>
+            <h3 style="color: var(--main-blue);">AdMarket_Coin KODINI KIRITISH</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">Do'stingizning AdMarket_Coin
+                kodini kiriting:</p>
+            <input type="text" id="ref-code-input" placeholder="ABCDEF" maxlength="6"
+                style="text-transform: uppercase;">
+            <button class="btn-main" onclick="applyReferral()">TASDIQLASH</button>
+        </div>
+    </div>
+
+    <div id="bonus-modal" class="modal ">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeBonus()">&times;</span>
+            <h2 style="color: var(--main-blue); margin-bottom: 5px;">KUNLIK BONUS</h2>
+            <div style="font-size: 60px; margin: 15px 0;">🎁</div>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">Maxsus promokodni kiriting
+            </p>
+            <input type="text" id="bonus-code-input" placeholder="Kodni kiriting..." style="text-transform: uppercase;">
+            <button class="btn-main" onclick="checkBonusCode()">BONUSNI OLISH</button>
+        </div>
+    </div>
+
+    <div id="boost-order-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeBoostOrder()">&times;</span>
+            <h3 style="color: var(--yum-orange); margin-bottom: 20px;">🚀 XIZMATLAR</h3>
+            <h3 style="color: var(--yum-orange); margin-bottom: 20px;">🚀 NAKRUTKA XIZMATLARI</h3>
+
+            <!-- Instagram xizmatlari -->
+            <div class="boost-section">
+                <h4 style="color: var(--main-blue); margin-bottom: 10px;">📷 Instagram</h4>
+                <div class="boost-item">
+                    <div class="boost-info">
+                        <span>👀 Instagram Prosmotr</span>
+                        <span style="color: var(--yum-orange);">10 💎 / 1000 ta</span>
+                    </div>
+                    <button class="btn-boost" onclick="orderBoost('instagram_views')">SOTIB OLISH</button>
+                </div>
+                <div class="boost-item">
+                    <div class="boost-info">
+                        <span>❤️ Instagram Jonatishlar</span>
+                        <span style="color: var(--yum-orange);">15 💎 / 1000 ta</span>
+                    </div>
+                    <button class="btn-boost" onclick="orderBoost('instagram_likes')">SOTIB OLISH</button>
+                </div>
+            </div>
+
+            <!-- Telegram xizmatlari -->
+            <div class="boost-section" style="margin-top: 20px;">
+                <h4 style="color: var(--main-blue); margin-bottom: 10px;">📱 Telegram</h4>
+                <div class="boost-item">
+                    <div class="boost-info">
+                        <span>👀 Telegram Prosmotr</span>
+                        <span style="color: var(--yum-orange);">5 💎 / 1000 ta</span>
+                    </div>
+                    <button class="btn-boost" onclick="orderBoost('telegram_views')">SOTIB OLISH</button>
+                </div>
+                <div class="boost-item">
+                    <div class="boost-info">
+                        <span>👍 Telegram Reaksiya</span>
+                        <span style="color: var(--yum-orange);">8 💎 / 1000 ta</span>
+                    </div>
+                    <button class="btn-boost" onclick="orderBoost('telegram_reactions')">SOTIB OLISH</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; padding: 15px; background: var(--card-bg); border-radius: 10px;">
+                <p style="font-size: 12px; color: var(--text-secondary); text-align: center;">
+                    📞 Admin bilan bog'lanish: <a href="https://t.me/AdMarket_admin"
+                        style="color: var(--main-blue);">@AdMarket_admin</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="ad-create-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeAdCreate()">&times;</span>
+            <h3 style="color: var(--yum-orange); margin-bottom: 20px;">🚀 REKLAMA YARATISH</h3>
+            
+            <!-- Image Upload Section -->
+            <div style="margin-bottom: 20px;">
+                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">📷 Reklama rasmi</label>
+                <div style="border: 2px dashed var(--border-color); border-radius: 10px; padding: 20px; text-align: center; background: var(--bg-dark); cursor: pointer;" onclick="document.getElementById('ad-image-input').click()">
+                    <div id="ad-image-preview" style="margin-bottom: 10px;">
+                        <span style="color: var(--text-secondary); font-size: 14px;">📷 Rasmni tanlang</span>
+                    </div>
+                    <input type="file" id="ad-image-input" accept="image/*" style="display: none;" onchange="previewAdImage(event)">
+                    <span style="color: var(--main-blue); font-size: 12px;">Rasm yuklash uchun bosing</span>
+                </div>
+            </div>
+
+            <!-- Ad Text Section -->
+            <div style="margin-bottom: 20px;">
+                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">📝 Reklama matni</label>
+                <textarea id="ad-text-input" placeholder="Reklama matnini kiriting..." style="width: 100%; min-height: 80px; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 12px; resize: vertical; outline: none;"></textarea>
+            </div>
+
+            <!-- Social Media Selection -->
+            <div style="margin-bottom: 20px;">
+                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">🔗 Ijtimoiy tarmoq</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button type="button" id="telegram-btn" class="social-btn" onclick="selectSocial('telegram')" style="flex: 1; padding: 10px; border: 1px solid var(--border-color); background: var(--card-bg); color: white; border-radius: 8px; cursor: pointer;">
+                        📱 Telegram
+                    </button>
+                    <button type="button" id="instagram-btn" class="social-btn" onclick="selectSocial('instagram')" style="flex: 1; padding: 10px; border: 1px solid var(--border-color); background: var(--card-bg); color: white; border-radius: 8px; cursor: pointer;">
+                        📷 Instagram
+                    </button>
+                </div>
+                
+                <!-- Link Input -->
+                <input type="text" id="ad-link-input" placeholder="Telegram kanal linki (@username) yoki Instagram profil linki" style="width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 14px; margin-bottom: 10px; outline: none;">
+            </div>
+
+            <!-- Duration Selection -->
+            <div style="margin-bottom: 20px;">
+                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">📅 Reklama muddati</label>
+                <select id="ad-duration" style="width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 14px; outline: none;">
+                    <option value="1">1 kun - 100 💎</option>
+                    <option value="5">5 kun - 400 💎</option>
+                    <option value="15">15 kun - 1100 💎</option>
+                    <option value="30">30 kun - 2000 💎</option>
+                </select>
+            </div>
+
+            <!-- Price Display -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <span style="color: var(--text-secondary); font-size: 14px;">Narxi: </span>
+                <span id="ad-price-display" style="color: var(--yum-orange); font-size: 18px; font-weight: bold;">100 💎</span>
+            </div>
+
+            <!-- Submit Button -->
+            <button class="btn-main" onclick="submitAd()">REKLAMANI YUBORISH</button>
+        </div>
+    </div>
+
+    <div id="main-app" style="display: none;">
+        <div class="header">
+            <div class="logo">AdMarket_Coin</div>
+            <div class="bal-box">
+                <span>💎 <span id="bal-top">0</span></span>
+                <span>🪙 <span id="yum-top">0</span></span>
+            </div>
+        </div>
+
+        <div id="work-page" class="tab-content active">
+            <div class="sub-tabs">
+                <button class="sub-btn active" id="btn-m" onclick="showWork('mavjud')">MAVJUD</button>
+                <button class="sub-btn" id="btn-y" onclick="showWork('yaratish')">YARATISH</button>
+            </div>
+
+            <div id="work-mavjud">
+                <div id="task-1" class="task-card">
+                    <div><b>AdMarket_Coin</b><br><span style="color:var(--yum-orange); font-size:12px;">+5 🪙
+                            coin</span>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="btn-action btn-go"
+                            onclick="window.open('https://t.me/AdMarket_coin'); unlockCheck('task-1')">O'TISH</button>
+                        <button id="check-task-1" class="btn-action btn-check" onclick="doTask('task-1', 5, 'yum')"
+                            disabled style="opacity: 0.5;">TEKSHIRISH</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="work-yaratish" style="display: none; padding: 10px;">
+                <input type="text" id="c-name" placeholder="Kanal yoki guruh nomi">
+                <input type="text" id="c-link" placeholder="Kanal linki (@username)">
+                <input type="number" id="c-count" placeholder="Odam soni" oninput="recalc()">
+                <p style="text-align: center;">Narxi: <span id="c-price"
+                        style="color: var(--main-blue); font-weight:bold;">0</span> 💎</p>
+                <button class="btn-main" onclick="orderNow()">BUYURTMA BERISH</button>
+            </div>
+        </div>
+
+        <div id="friends-page" class="tab-content">
+            <div class="invite-card">
+                <p style="font-size: 12px; color: var(--text-secondary);">AdMarket_Coin TAKLIF KODINGIZ</p>
+                <div class="code-display" id="my-invite-code">......</div>
+                <p style="font-size: 12px; color: var(--yum-orange);">Sizga: +20 🪙 | Do'stingizga: +50 🪙</p>
+            </div>
+
+            <div id="friends-list" style="margin-top: 20px;">
+                <h4 style="color: var(--main-blue); margin-bottom: 15px; text-align: center;">👥 QO'SHILGAN DO'STLAR
+                </h4>
+                <div id="friends-container">
+                    <p style="color: var(--text-secondary); font-size: 13px; text-align: center;">Hozircha do'stlar yo'q
+                    </p>
+                </div>
+            </div>
+
+            <p style="text-align: center; font-size: 11px; color: var(--text-secondary); margin-top: 20px;">
+                Do'stingiz AdMarket_Coin kod orqali ro'yxatdan o'tsa yoki olmos yuborsa, bu yerda aks etadi.
+            </p>
+        </div>
+
+        <div id="boost-page" class="tab-content">
+            <div style="padding: 10px;">
+                <h3 style="color: var(--main-blue); text-align: center; margin-bottom: 20px;">REKLAMA MAYDONI</h3>
+
+                <div class="ad-container">
+                    <div class="ad-image-slot">
+                        <img src="RASM_LINKINI_SHU_YERGA_QOYING.jpg" alt="Reklama"
+                            onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'color:#475569\'>Rasm yuklanmagan</span>'">
+                    </div>
+                    <div class="ad-title">Sizning Reklamangiz</div>
+                    <div class="ad-description">
+                        Bu yerda reklamangiz matni va tavsifi ko'rinadi. Foydalanuvchilarni o'z kanalingiz yoki
+                        mahsulotingizga jalb qiling.
+                    </div>
+                </div>
+
+                <div
+                    style="background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--border-color); text-align: center;">
+                    <h4 style="color: var(--yum-orange); margin-bottom: 10px;">Reklama bermoqchimisiz?</h4>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px;">
+                        O'z reklamangizni ushbu oynaga joylashtirish uchun admin bilan bog'laning.
+                    </p>
+                    <button class="btn-main" onclick="openAdCreate()"
+                        style="display: block; background: var(--main-blue); color: black; border: none;">
+                        🚀 REKLAMA BERISH
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="coin-page" class="tab-content">
+            <div style="padding: 10px;">
+                <h3 style="color: var(--yum-orange); text-align: center; margin-bottom: 20px;">🪙 COIN BO'LIMI</h3>
+                <div class="clicker-container">
+                    <div class="coin-wrapper" id="coin-click-area">
+                        <img src="photo_2026-04-26_20-37-23.png" class="main-coin-img" id="tanga-img">
+                    </div>
+
+                    <div style="width: 80%; margin-top: 20px;">
+                        <div
+                            style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px;">
+                            <span>⚡ <span id="energy-count">1000</span> / 1000</span>
+                        </div>
+                        <div
+                            style="width: 100%; height: 8px; background: #1e293b; border-radius: 10px; overflow: hidden;">
+                            <div id="energy-bar"
+                                style="width: 100%; height: 100%; background: linear-gradient(90deg, #fbbf24, #f59e0b); transition: width 0.2s;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coin Balance Card -->
+                <div
+                    style="background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--border-color); text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">JAMI COIN BALANS
+                    </div>
+                    <div style="font-size: 36px; font-weight: bold; color: var(--yum-orange); margin-bottom: 15px;">
+                        🪙 <span id="coin-balance-display">0.00</span>
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">
+                        1 💎 = 0.05 🪙
+                    </div>
+                </div>
+
+                <!-- Coin Operations -->
+                <div class="boost-section">
+                    <h4 style="color: var(--main-blue); margin-bottom: 15px;">💼 COIN AMALLARI</h4>
+
+                    <div class="menu-item" onclick="openWalletModal()"
+                        style="border-left: 5px solid var(--yum-orange);">
+                        <span style="color: var(--yum-orange); font-weight: bold;">👛 Wallet manzili</span> ❯
+                    </div>
+
+                    <div class="menu-item" onclick="openSetWalletModal()"
+                        style="border-left: 5px solid var(--yum-orange);">
+                        <span style="color: var(--yum-orange); font-weight: bold;">🔗 Wallet ulash</span> ❯
+                    </div>
+
+                    <div class="menu-item" onclick="openWithdrawModal()"
+                        style="border-left: 5px solid var(--yum-orange);">
+                        <span style="color: var(--yum-orange); font-weight: bold;">💸 Pul chiqarish</span> ❯
+                    </div>
+
+                    <div class="menu-item" onclick="openStakeModal()" style="border-left: 5px solid var(--yum-orange);">
+                        <span style="color: var(--yum-orange); font-weight: bold;">🏦 Staking (10% yillik)</span> ❯
+                    </div>
+
+                    <div class="menu-item" onclick="doMining()" style="border-left: 5px solid var(--yum-orange);">
+                        <span style="color: var(--yum-orange); font-weight: bold;">⛏️ Mining (kunlik)</span> ❯
+                    </div>
+                </div>
+
+                <!-- Coin Info -->
+                <div
+                    style="background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid var(--border-color); margin-top: 20px;">
+                    <h4 style="color: var(--main-blue); margin-bottom: 10px;">📊 Coin haqida</h4>
+                    <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+                        <p>• Coin - bu AdMarket platformasining kripto valyutasi</p>
+                        <p>• Minimal chiqarish: 50 🪙</p>
+                        <p>• Staking: 10% yillik daromad</p>
+                        <p>• Mining: har 24 soatda 1 🪙</p>
+                        <p>• Konvertatsiya: 900 💎 → 45 🪙</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="profil-page" class="tab-content">
+            <div class="profile-header">
+                <div class="avatar-box"><img src="" id="u-p-img"></div>
+                <b id="u-p-name"
+                    style="font-size: 22px; letter-spacing: 1px; text-transform: uppercase;">FOYDALANUVCHI</b>
+                <div id="u-p-id" style="color:var(--text-secondary); font-size:12px; margin-top:5px;">ID: 00000000</div>
+            </div>
+
+            <div class="menu-item"
+                onclick="tg.showAlert('Tangalar orqali yaqin kunlarda VIP xizmatlar va pullik funksiyalarni sotib olishingiz mumkin bo\'ladi!')"
+                style="border-left: 5px solid var(--gold);">
+                <span style="color:var(--yum-orange); font-weight:bold;">🪙 Coin nima qilsa bo'ladi?</span> ❯
+            </div>
+            <div class="menu-item" onclick="openExchange()">
+                <span>🔄 Valyutani almashtirish</span> ❯
+            </div>
+            <div class="menu-item" onclick="openReferral()">
+                <span>🎟 AdMarket_Coin kodini kiritish (+20 🪙)</span> ❯
+            </div>
+            <div class="menu-item" onclick="openBonus()">
+                <span>🎁 Kunlik Bonus (Promokod)</span> ❯
+            </div>
+            <div class="menu-item" onclick="openOrders()">
+                <span>📋 Buyurtmalarim</span> ❯
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="nav-item" onclick="switchMain('friends-page', this)"><span class="nav-icon">👥</span>Do'stlar
+        </div>
+        <div class="nav-item active" onclick="switchMain('work-page', this)"><span class="nav-icon">💎</span>Ishlash
+        </div>
+        <div class="nav-item" onclick="switchMain('coin-page', this)"><span class="nav-icon">🪙</span>COIN</div>
+        <div class="nav-item" onclick="switchMain('boost-page', this)"><span class="nav-icon">🚀</span>Reklama</div>
+        <div class="nav-item" onclick="switchMain('profil-page', this)"><span class="nav-icon">👤</span>Profil</div>
+    </div>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // 1. MA'LUMOTLARNI SAQLASH VA YUKLASH (YANGILANDI)
+        let d = parseInt(localStorage.getItem('d_bal')) || 0;
+        let c = parseInt(localStorage.getItem('c_bal')) || 0;
+        let usedCodes = JSON.parse(localStorage.getItem('used_promos_map')) || {};
+        let myOrders = JSON.parse(localStorage.getItem('my_orders')) || [];
+        let refUsed = localStorage.getItem('ref_used') || "false";
+        let myFriends = JSON.parse(localStorage.getItem('my_friends')) || [];
+
+        // YANGI: Global vazifalar (boshqalar ko'rishi uchun) va bajarilganlar ro'yxati
+        let globalTasks = JSON.parse(localStorage.getItem('global_tasks')) || [
+            { id: 'task-1', title: '@AdMarket_Uz', link: 'https://t.me/AdMarket_Uz', reward: 10 }
+        ];
+        let completedTasks = JSON.parse(localStorage.getItem('completed_tasks')) || [];
+
+        let taskOk = {};
+
+        function generateUserCode() {
+            let code = localStorage.getItem('user_invite_code');
+            if (!code) {
+                const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                code = '';
+                for (let i = 0; i < 6; i++) {
+                    code += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                localStorage.setItem('user_invite_code', code);
+            }
+            return code;
+        }
+
+        // 2. UI YANGILASH (YANGILANDI)
+        function updateUI() {
+            document.getElementById('bal-top').innerText = d.toLocaleString();
+            document.getElementById('yum-top').innerText = c.toFixed(2);
+            document.getElementById('my-invite-code').innerText = generateUserCode();
+
+            // Coin page balance display
+            let coinDisplay = document.getElementById('coin-balance-display');
+            if (coinDisplay) {
+                coinDisplay.innerText = c.toFixed(2);
+            }
+
+            localStorage.setItem('d_bal', d);
+            localStorage.setItem('c_bal', c);
+            localStorage.setItem('used_promos_map', JSON.stringify(usedCodes));
+            localStorage.setItem('my_orders', JSON.stringify(myOrders));
+            localStorage.setItem('ref_used', refUsed);
+            localStorage.setItem('my_friends', JSON.stringify(myFriends));
+
+            // YANGI: Vazifalarni saqlash
+            localStorage.setItem('global_tasks', JSON.stringify(globalTasks));
+            localStorage.setItem('completed_tasks', JSON.stringify(completedTasks));
+
+            renderOrders();
+            renderMavjudTasks(); // Mavjud vazifalarni har doim qayta chizish
+            renderFriends(); // Do'stlarni chizish
+        }
+
+        // 3. MAVJUD VAZIFALARNI CHIZISH (YANGI FUNKSIYA)
+        function renderMavjudTasks() {
+            let container = document.getElementById('work-mavjud');
+            container.innerHTML = "";
+
+            globalTasks.forEach(task => {
+                // Agar vazifa bajarilgan bo'lsa, uni ko'rsatmaymiz
+                if (completedTasks.includes(task.id)) return;
+
+                container.innerHTML += `
+                    <div id="${task.id}" class="task-card">
+                        <div><b>${task.title}</b><br><span style="color:var(--main-blue); font-size:12px;">+${task.reward} olmos</span></div>
+                        <div style="display: flex; gap: 5px;">
+                            <button class="btn-action btn-go" onclick="window.open('${task.link}'); unlockCheck('${task.id}')">O'TISH</button>
+                            <button id="check-${task.id}" class="btn-action btn-check" onclick="doTask('${task.id}', ${task.reward})" disabled style="opacity: 0.5;">TEKSHIRISH</button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // 4. BUYURTMA BERISH (YANGILANDI)
+        function orderNow() {
+            let nameInput = document.getElementById('c-name').value; // Nomni olish
+            let linkInput = document.getElementById('c-link').value;
+            let n = document.getElementById('c-count').value;
+            let cost = n * 5;
+
+            // Nom kiritilganini ham tekshiramiz
+            if (d >= cost && cost > 0 && linkInput.length > 2 && nameInput.length > 1) {
+                d -= cost;
+
+                let taskID = 'task-' + Math.floor(Math.random() * 1000000);
+                let formattedLink = linkInput.startsWith('@') ? `https://t.me/${linkInput.substring(1)}` : linkInput;
+
+                // Buyurtmalarim ro'yxatiga qo'shish
+                let newOrder = {
+                    id: Math.floor(10000 + Math.random() * 90000),
+                    title: nameInput, // Link o'rniga nomni saqlaymiz
+                    link: linkInput,
+                    count: n,
+                    date: new Date().toLocaleDateString()
+                };
+                myOrders.unshift(newOrder);
+
+                // "MAVJUD" bo'limiga qo'shish (Endi title sifatida nameInput ishlatiladi)
+                globalTasks.push({
+                    id: taskID,
+                    title: nameInput, // BU YERDA HAQIQIY NOM CHIQADI
+                    link: formattedLink,
+                    reward: 10
+                });
+
+                updateUI();
+                tg.showAlert("✅ Buyurtma qabul qilindi!");
+
+                // Inputlarni tozalash
+                document.getElementById('c-name').value = "";
+                document.getElementById('c-count').value = "";
+                document.getElementById('c-link').value = "";
+                recalc();
+            } else {
+                tg.showAlert("❌ Ma'lumotlarni to'liq kiriting!");
+            }
+        }
+
+        // 5. VAZIFANI BAJARISH (YANGILANDI)
+        function doTask(id, amt, type = 'diamond') {
+            if (taskOk[id]) {
+                if (type === 'yum') {
+                    c += amt;
+                    tg.showAlert("✅ +" + amt + " 🪙");
+                } else {
+                    d += amt;
+                    tg.showAlert("✅ +" + amt + " 💎");
+                }
+                completedTasks.push(id);
+                updateUI();
+            }
+        }
+
+        // Qolgan funksiyalar o'zgarishsiz qoladi...
+        function unlockCheck(id) {
+            taskOk[id] = true;
+            let b = document.getElementById('check-' + id);
+            if (b) { b.disabled = false; b.style.opacity = "1"; }
+        }
+
+        function recalc() {
+            let n = document.getElementById('c-count').value || 0;
+            document.getElementById('c-price').innerText = (n * 5).toLocaleString();
+        }
+
+        function switchMain(id, el) {
+            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
+        }
+
+        function showWork(t) {
+            document.getElementById('work-mavjud').style.display = t === 'mavjud' ? 'block' : 'none';
+            document.getElementById('work-yaratish').style.display = t === 'yaratish' ? 'block' : 'none';
+            document.getElementById('btn-m').classList.toggle('active', t === 'mavjud');
+            document.getElementById('btn-y').classList.toggle('active', t === 'yaratish');
+        }
+
+        // Boshqa modal funksiyalaringiz (openExchange, closeExchange va hkz) shu yerda tursin...
+        function openExchange() { document.getElementById('exchange-modal').style.display = 'flex'; }
+        function closeExchange() { document.getElementById('exchange-modal').style.display = 'none'; }
+        function exchangeDiamonds() {
+            if (d >= 900) { d -= 900; c += 45; updateUI(); tg.showAlert("✅ Almashtirildi!"); closeExchange(); }
+            else { tg.showAlert("❌ Olmos yetarli emas!"); }
+        }
+        function openOrders() { document.getElementById('orders-modal').style.display = 'flex'; }
+        function closeOrders() { document.getElementById('orders-modal').style.display = 'none'; }
+        function openReferral() { if (refUsed === "true") { tg.showAlert("Kiritilgan!"); return; } document.getElementById('promo-referral-modal').style.display = 'flex'; }
+        function closeReferral() { document.getElementById('promo-referral-modal').style.display = 'none'; }
+        function openBonus() { document.getElementById('bonus-modal').style.display = 'flex'; }
+        function closeBonus() { document.getElementById('bonus-modal').style.display = 'none'; }
+        function openTransfer() { document.getElementById('transfer-modal').style.display = 'flex'; }
+        function closeTransfer() { document.getElementById('transfer-modal').style.display = 'none'; }
+
+        // Coin clicker functionality
+        let userBalance = c; // Use the main coin balance
+        let userEnergy = 1000;
+        const maxEnergy = 1000;
+
+        // Initialize coin clicker after page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const clickArea = document.getElementById('coin-click-area');
+            const balanceTop = document.getElementById('yum-top');
+            const balanceInPage = document.getElementById('coin-balance-display');
+            const energyText = document.getElementById('energy-count');
+            const energyBar = document.getElementById('energy-bar');
+
+            if (clickArea) {
+                clickArea.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+
+                    if (userEnergy > 0) {
+                        userBalance += 0.01;
+                        userEnergy -= 1;
+                        c = userBalance; // Sync with main balance
+
+                        // Update UI
+                        if (balanceTop) balanceTop.innerText = c.toFixed(2);
+                        if (balanceInPage) balanceInPage.innerText = c.toFixed(2);
+                        if (energyText) energyText.innerText = userEnergy;
+                        if (energyBar) energyBar.style.width = (userEnergy / maxEnergy * 100) + "%";
+
+                        // Create tap effect
+                        createTapEffect(e.clientX, e.clientY);
+
+                        // Haptic feedback
+                        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                        }
+
+                        updateUI(); // Save to localStorage
+                    }
+                });
+            }
+
+            // Energy regeneration
+            setInterval(() => {
+                if (userEnergy < maxEnergy) {
+                    userEnergy += 1;
+                    if (energyText) energyText.innerText = userEnergy;
+                    if (energyBar) energyBar.style.width = (userEnergy / maxEnergy * 100) + "%";
+                }
+            }, 3000);
+        });
+
+        function createTapEffect(x, y) {
+            const effect = document.createElement('div');
+            effect.className = 'tap-effect';
+            effect.innerText = '+0.01';
+            effect.style.position = 'fixed';
+            effect.style.left = x + 'px';
+            effect.style.top = (y - 50) + 'px';
+            effect.style.zIndex = '1000';
+            document.body.appendChild(effect);
+
+            setTimeout(() => effect.remove(), 800);
+        }
+
+        // Coin modal functions
+        function openWalletModal() {
+            let wallet = localStorage.getItem('yum_wallet') || 'Wallet ulanmagan';
+            tg.showAlert(`👛 Sizning wallet manzilingiz:\n\n${wallet}`);
+        }
+
+        function openSetWalletModal() {
+            let wallet = prompt('🔗 Wallet manzilini kiriting:', localStorage.getItem('yum_wallet') || '');
+            if (wallet && wallet.trim().length > 10) {
+                localStorage.setItem('yum_wallet', wallet.trim());
+                tg.showAlert('✅ Wallet manzili saqlandi!');
+            } else if (wallet) {
+                tg.showAlert('❌ Noto\'g\'ri wallet manzili!');
+            }
+        }
+
+        function openWithdrawModal() {
+            let wallet = localStorage.getItem('yum_wallet');
+            if (!wallet) {
+                tg.showAlert('❌ Avval wallet ulashing!');
+                return;
+            }
+
+            let amount = prompt('💸 Chiqarish miqdorini kiriting (minimal 50 🪙):');
+            if (amount && parseFloat(amount) >= 50 && parseFloat(amount) <= c) {
+                c -= parseFloat(amount);
+                updateUI();
+                tg.showAlert(`✅ ${amount} 🪙 so\'rov yuborildi!\n\nWallet: ${wallet}\nAdmin tez orada pulni yuboradi.`);
+            } else if (amount) {
+                tg.showAlert('❌ Noto\'g\'ri miqdor yoki yetarli emas!');
+            }
+        }
+
+        function openStakeModal() {
+            let amount = prompt('🏦 Staking miqdorini kiriting:');
+            if (amount && parseFloat(amount) > 0 && parseFloat(amount) <= c) {
+                let currentStake = parseFloat(localStorage.getItem('staking_amount') || '0');
+                localStorage.setItem('staking_amount', (currentStake + parseFloat(amount)).toString());
+                c -= parseFloat(amount);
+                updateUI();
+                tg.showAlert(`✅ ${amount} 🪙 stakingga qo\'shildi!\n\nYillik daromad: 10%`);
+            } else if (amount) {
+                tg.showAlert('❌ Noto\'g\'ri miqdor yoki yetarli emas!');
+            }
+        }
+
+        function doMining() {
+            let lastMining = localStorage.getItem('last_mining') || '0';
+            let now = Date.now();
+            let hoursSinceLastMining = (now - parseInt(lastMining)) / (1000 * 60 * 60);
+
+            if (hoursSinceLastMining >= 24) {
+                c += 1;
+                localStorage.setItem('last_mining', now.toString());
+                updateUI();
+                tg.showAlert('⛏️ Mining muvaffaqiyatli!\n\n+1 🪙');
+            } else {
+                let remainingHours = Math.ceil(24 - hoursSinceLastMining);
+                tg.showAlert(`⏰ Mining uchun kutish kerak:\n\n${remainingHours} soat qoldi`);
+            }
+        }
+
+        // Advertisement creation modal functions
+        let selectedSocial = 'telegram';
+        let adImageData = null;
+
+        function openAdCreate() {
+            document.getElementById('ad-create-modal').style.display = 'flex';
+        }
+
+        function closeAdCreate() {
+            document.getElementById('ad-create-modal').style.display = 'none';
+            resetAdForm();
+        }
+
+        function selectSocial(type) {
+            selectedSocial = type;
+            
+            // Update button styles
+            document.querySelectorAll('.social-btn').forEach(btn => {
+                btn.style.background = 'var(--card-bg)';
+                btn.style.color = 'white';
+            });
+            
+            if (type === 'telegram') {
+                document.getElementById('telegram-btn').style.background = 'var(--main-blue)';
+                document.getElementById('telegram-btn').style.color = '#000';
+                document.getElementById('ad-link-input').placeholder = 'Telegram kanal linki (@username)';
+            } else {
+                document.getElementById('instagram-btn').style.background = 'var(--main-blue)';
+                document.getElementById('instagram-btn').style.color = '#000';
+                document.getElementById('ad-link-input').placeholder = 'Instagram profil linki';
+            }
+        }
+
+        function previewAdImage(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    adImageData = e.target.result;
+                    document.getElementById('ad-image-preview').innerHTML = 
+                        `<img src="${adImageData}" style="max-width: 100%; max-height: 200px; border-radius: 8px;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateAdPrice() {
+            const duration = document.getElementById('ad-duration').value;
+            const prices = { '1': '100', '5': '400', '15': '1100', '30': '2000' };
+            document.getElementById('ad-price-display').innerText = prices[duration] + ' 💎';
+        }
+
+        function submitAd() {
+            // Debug: Check if function is called
+            console.log('submitAd function called');
+            
+            const text = document.getElementById('ad-text-input').value.trim();
+            const link = document.getElementById('ad-link-input').value.trim();
+            const duration = document.getElementById('ad-duration').value;
+            const prices = { '1': 100, '5': 400, '15': 1100, '30': 2000 };
+            const price = prices[duration];
+
+            // Debug: Log values
+            console.log('Values:', { text, link, duration, price, adImageData, d, selectedSocial });
+
+            // Validation
+            if (!text) {
+                tg.showAlert('❌ Reklama matnini kiriting!');
+                return;
+            }
+
+            if (!link) {
+                tg.showAlert('❌ Linkni kiriting!');
+                return;
+            }
+
+            if (!adImageData) {
+                tg.showAlert('❌ Reklama rasmini yuklang!');
+                return;
+            }
+
+            if (d < price) {
+                tg.showAlert(`❌ Olmos yetarli emas! ${price} 💎 kerak.`);
+                return;
+            }
+
+            // Process ad submission
+            d -= price;
+            
+            const newAd = {
+                id: Math.floor(10000 + Math.random() * 90000),
+                text: text,
+                link: link,
+                image: adImageData,
+                social: selectedSocial,
+                duration: duration,
+                price: price,
+                status: 'pending',
+                createdDate: new Date().toLocaleDateString(),
+                expiryDate: new Date(Date.now() + (parseInt(duration) * 24 * 60 * 60 * 1000)).toLocaleDateString()
+            };
+
+            // Save ad to localStorage
+            myAds.unshift(newAd);
+            localStorage.setItem('my_ads', JSON.stringify(myAds));
+
+            updateUI();
+            tg.showAlert('✅ Reklama yuborildi! Admin tez orada ko\'rib chiqadi.');
+            closeAdCreate();
+
+            // Reset form
+            resetAdForm();
+        }
+
+        function resetAdForm() {
+            document.getElementById('ad-text-input').value = '';
+            document.getElementById('ad-link-input').value = '';
+            document.getElementById('ad-duration').value = '1';
+            document.getElementById('ad-image-preview').innerHTML = '<span style="color: var(--text-secondary); font-size: 14px;">📷 Rasmni tanlang</span>';
+            adImageData = null;
+            selectedSocial = 'telegram';
+            selectSocial('telegram');
+            updateAdPrice();
+        }
+
+        // Add event listener for duration change
+        document.addEventListener('DOMContentLoaded', function() {
+            const durationSelect = document.getElementById('ad-duration');
+            if (durationSelect) {
+                durationSelect.addEventListener('change', updateAdPrice);
+            }
+            selectSocial('telegram');
+        });
+
+        // Reklama funksiyalari
+        let myAds = JSON.parse(localStorage.getItem('my_ads')) || [];
+
+        function showAdSection(section) {
+            if (section === 'create') {
+                document.getElementById('ad-create-section').style.display = 'block';
+                document.getElementById('ad-manage-section').style.display = 'none';
+                document.getElementById('btn-create-ad').classList.add('active');
+                document.getElementById('btn-my-ads').classList.remove('active');
+            } else {
+                document.getElementById('ad-create-section').style.display = 'none';
+                document.getElementById('ad-manage-section').style.display = 'block';
+                document.getElementById('btn-create-ad').classList.remove('active');
+                document.getElementById('btn-my-ads').classList.add('active');
+                renderMyAds();
+            }
+        }
+
+        function createAd() {
+            let title = document.getElementById('ad-title').value;
+            let link = document.getElementById('ad-link').value;
+            let description = document.getElementById('ad-description').value;
+            let type = document.getElementById('ad-type').value;
+            let duration = document.getElementById('ad-duration').value;
+
+            if (!title || !link || !description) {
+                tg.showAlert(" Barcha maydonlarni to'ldiring!");
+                return;
+            }
+
+            // Narxlarni hisoblash
+            let prices = { '1': 100, '5': 400, '15': 1100, '30': 2000 };
+            let price = prices[duration] || 100;
+
+            if (d >= price) {
+                d -= price;
+
+                let newAd = {
+                    id: Math.floor(10000 + Math.random() * 90000),
+                    title: title,
+                    link: link,
+                    description: description,
+                    type: type,
+                    duration: duration,
+                    price: price,
+                    status: 'active',
+                    createdDate: new Date().toLocaleDateString(),
+                    expiryDate: new Date(Date.now() + (parseInt(duration) * 24 * 60 * 60 * 1000)).toLocaleDateString()
+                };
+
+                myAds.unshift(newAd);
+                updateUI();
+
+                tg.showAlert("✅ Reklama qabul qilindi! Tez orada admin siz bilan bog'lanadi.");
+
+                // Formani tozalash
+                document.getElementById('ad-title').value = '';
+                document.getElementById('ad-link').value = '';
+                document.getElementById('ad-description').value = '';
+                document.getElementById('ad-type').value = 'telegram';
+                document.getElementById('ad-duration').value = '1';
+                updateAdPrice();
+            } else {
+                tg.showAlert(`❌ Olmos yetarli emas! ${price} 💎 kerak.`);
+            }
+        }
+
+        function renderMyAds() {
+            let container = document.getElementById('my-ads-list');
+            if (myAds.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-secondary); font-size: 13px; text-align: center;">Hozircha reklamar yo'q</p>`;
+            } else {
+                container.innerHTML = myAds.map(ad => `
+                    <div class="task-card">
+                        <div style="flex: 1;">
+                            <div style="font-weight: bold; color: var(--main-blue); margin-bottom: 5px;">${ad.title}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 5px;">${ad.description}</div>
+                            <div style="font-size: 11px; color: var(--yum-orange);">📅 ${ad.createdDate} - ${ad.expiryDate}</div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 5px;">
+                            <span style="font-size: 12px; color: var(--text-secondary);">${ad.duration} kun</span>
+                            <span style="font-size: 11px; padding: 2px 8px; background: var(--main-blue); color: #000; border-radius: 10px; font-weight: bold;">${ad.status.toUpperCase()}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Referral funksiyalari
+        function applyReferral() {
+            let code = document.getElementById('ref-code-input').value.toUpperCase();
+
+            if (!code || code.length !== 6) {
+                tg.showAlert("❌ Notog'ri kod! 6 ta harf kiriting.");
+                return;
+            }
+
+            if (refUsed === "true") {
+                tg.showAlert("❌ Siz allaqachon referral kod kiritgansiz!");
+                closeReferral();
+                return;
+            }
+
+            if (code === generateUserCode()) {
+                tg.showAlert("❌ O'zingiz kodini kiritib bo'lmaysiz!");
+                return;
+            }
+
+            // Kodni qabul qilish
+            refUsed = "true";
+            d += 80; // 80 olmos bonus
+            c += 20; // 20 coin bonus
+
+            // Do'stni qo'shish (simulyatsiya)
+            let newFriend = {
+                name: "Do'st " + Math.floor(Math.random() * 1000),
+                date: new Date().toLocaleDateString(),
+                bonus: 20
+            };
+            myFriends.unshift(newFriend);
+
+            updateUI();
+            tg.showAlert("✅ Kod qabul qilindi! +80 💎 +20 🪙 bonus oldingiz!");
+            closeReferral();
+        }
+
+        function sendDiamonds() {
+            let targetCode = document.getElementById('target-code').value.toUpperCase();
+            let amount = parseInt(document.getElementById('transfer-amount').value);
+
+            if (!targetCode || targetCode.length !== 6) {
+                tg.showAlert("❌ Notog'ri kod!");
+                return;
+            }
+
+            if (amount < 50) {
+                tg.showAlert("❌ Minimal miqdor 50 💎!");
+                return;
+            }
+
+            if (d >= amount) {
+                d -= amount;
+                updateUI();
+                tg.showAlert(`✅ ${amount} 💎 yuborildi!`);
+                closeTransfer();
+
+                // Formani tozalash
+                document.getElementById('target-code').value = '';
+                document.getElementById('transfer-amount').value = '';
+            } else {
+                tg.showAlert("❌ Olmos yetarli emas!");
+            }
+        }
+
+        function checkBonusCode() {
+            let code = document.getElementById('bonus-code-input').value.toUpperCase();
+
+            if (!code) {
+                tg.showAlert("❌ Kodni kiriting!");
+                return;
+            }
+
+            // Bonus kodlari ro'yxati
+            let bonusCodes = {
+                'WELCOME': 50,
+                'DAILY100': 100,
+                'LUCKY200': 200,
+                'SUPER500': 500
+            };
+
+            if (usedCodes[code]) {
+                tg.showAlert("❌ Bu kod allaqachon ishlatilgan!");
+                return;
+            }
+
+            if (bonusCodes[code]) {
+                let bonus = bonusCodes[code];
+                d += bonus;
+                usedCodes[code] = true;
+                updateUI();
+                tg.showAlert(`✅ +${bonus} 💎 bonus oldingiz!`);
+                closeBonus();
+                document.getElementById('bonus-code-input').value = '';
+            } else {
+                tg.showAlert("❌ Notog'ri kod!");
+            }
+
+        }
+
+        // Boost buyurtqa funksiyalari
+        function openBoostOrder() {
+            document.getElementById('boost-order-modal').style.display = 'flex';
+            updateTotalPrice();
+        }
+
+        function closeBoostOrder() {
+            document.getElementById('boost-order-modal').style.display = 'none';
+        }
+
+        function changeQuantity(service, change) {
+            const input = document.getElementById('qty-' + service);
+            let currentValue = parseInt(input.value) || 1;
+            let newValue = currentValue + change;
+
+            if (newValue >= 1 && newValue <= 10000) {
+                input.value = newValue;
+                updateTotalPrice();
+            }
+        }
+
+        function updateTotalPrice() {
+            const services = ['instagram_views', 'instagram_likes', 'telegram_views', 'telegram_reactions', 'instagram_followers'];
+            const prices = {
+                'instagram_views': 10,
+                'instagram_likes': 15,
+                'telegram_views': 10,
+                'telegram_reactions': 2,
+                'instagram_followers': 20
+            };
+
+            let total = 0;
+            services.forEach(service => {
+                const qty = parseInt(document.getElementById('qty-' + service).value) || 0;
+                total += qty * prices[service];
+            });
+
+            document.getElementById('total-price').innerText = total + ' 💎';
+        }
+
+        function confirmBoostOrder() {
+            const link = document.getElementById('boost-link').value;
+            const totalPrice = parseInt(document.getElementById('total-price').innerText) || 0;
+
+            if (!link) {
+                tg.showAlert("❌ Iltimos, Instagram/Telegram linkini kiriting!");
+                return;
+            }
+
+            if (d >= totalPrice) {
+                d -= totalPrice;
+                updateUI();
+                tg.showAlert("✅ Buyurtma qabul qilindi! Tez orada admin siz bilan bog'lanadi.");
+                closeBoostOrder();
+
+                // Formani tozalash
+                document.getElementById('boost-link').value = '';
+                const services = ['instagram_views', 'instagram_likes', 'telegram_views', 'telegram_reactions', 'instagram_followers'];
+                services.forEach(service => {
+                    document.getElementById('qty-' + service).value = 1;
+                });
+                updateTotalPrice();
+            } else {
+                tg.showAlert(`❌ Olmos yetarli emas! ${totalPrice} 💎 kerak.`);
+            }
+        }
+
+        function orderBoost(service) {
+            openBoostOrder();
+        }
+
+        // Boost funksiyalari
+        function openBoost() {
+            openBoostOrder();
+        }
+        function closeBoost() {
+            closeBoostOrder();
+        }
+
+        function renderOrders() {
+            let list = document.getElementById('orders-list');
+            if (myOrders.length === 0) {
+                list.innerHTML = `<p style="color: var(--text-secondary); font-size: 13px;">Hozircha buyurtmalar yo'q</p>`;
+            } else {
+                list.innerHTML = myOrders.map(order => `
+                    <div class="order-card">
+                        <div class="order-id">#${order.id}</div>
+                        <div class="order-title">${order.title}</div> <div class="order-link">${order.link}</div>
+                        <div class="order-info">${order.count} ta • ${order.date}</div>
+                        <div class="order-status">BAJARILMOQDA</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function renderFriends() {
+            let container = document.getElementById('friends-container');
+            if (myFriends.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-secondary); font-size: 13px; text-align: center;">Hozircha do'stlar yo'q</p>`;
+            } else {
+                container.innerHTML = myFriends.map(friend => `
+                    <div class="task-card">
+                        <div>
+                            <b>${friend.name}</b><br>
+                            <span style="color:var(--yum-orange); font-size:12px;">+20 🪙 bonus</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 5px;">
+                            <span style="color: var(--text-secondary); font-size: 11px;">${friend.date}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function enterApp() {
+            // Progress bar animatsiyasi
+            const progressBar = document.querySelector('.progress-bar');
+            const loadingText = document.querySelector('.loading-text');
+
+            // Progress bar ni to'ldirish
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                progressBar.style.width = progress + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    loadingText.textContent = 'TAYYOR!';
+
+                    // 0.5 sekunddan so'ng asosiy ilovaga o'tish
+                    setTimeout(() => {
+                        document.getElementById('auth-overlay').style.display = 'none';
+                        document.getElementById('main-app').style.display = 'block';
+                    }, 500);
+                }
+            }, 100);
+        }
+
+        // Profil ma'lumotlari
+        let user = tg.initDataUnsafe.user;
+        if (user) {
+            document.getElementById('u-p-name').innerText = user.first_name;
+            document.getElementById('u-p-id').innerText = "ID: " + user.id;
+            document.getElementById('u-p-img').src = user.photo_url || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+        }
+
+        // Dastlabki ishga tushurish
+        updateUI();
+
+        // Avtomatik progress bar boshlash
+        setTimeout(() => {
+            enterApp();
+        }, 500);
+    </script>
+</body>
+
+</html>

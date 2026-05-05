@@ -1174,7 +1174,7 @@
                     </div>
 
                     <div class="menu-item" onclick="openStakeModal()" style="border-left: 5px solid var(--yum-orange);">
-                        <span style="color: var(--yum-orange); font-weight: bold;">🏦 Staking (10% yillik)</span> ❯
+                        <span style="color: var(--yum-orange); font-weight: bold;">🏦 Staking (10% oylik)</span> ❯
                     </div>
 
                     <div class="menu-item" onclick="doMining()" style="border-left: 5px solid var(--yum-orange);">
@@ -1189,14 +1189,13 @@
                     <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
                         <p>• Coin - bu AdMarket platformasining kripto valyutasi</p>
                         <p>• Minimal chiqarish: 50 🪙</p>
-                        <p>• Staking: 10% yillik daromad</p>
+                        <p>• Staking: 10% oylik daromad</p>
                         <p>• Mining: har 24 soatda 1 🪙</p>
                         <p>• Konvertatsiya: 900 💎 → 45 🪙</p>
                     </div>
                 </div>
             </div>
         </div>
-
         <div id="profil-page" class="tab-content">
             <div class="profile-header">
                 <div class="avatar-box"><img src="" id="u-p-img"></div>
@@ -1373,6 +1372,7 @@
             renderOrders();
             renderMavjudTasks(); // Mavjud vazifalarni har doim qayta chizish
             renderFriends(); // Do'stlarni chizish
+            renderActiveAds(); // Faol reklamlarni chizish
             renderActiveAds(); // Faol reklamlarni chizish
         }
 
@@ -1936,7 +1936,6 @@
         }
         
         // Coin clicker functionality
-        let userBalance = c; // Use the main coin balance
         let userEnergy = 1000;
         const maxEnergy = 1000;
 
@@ -1953,9 +1952,8 @@
                     e.preventDefault();
 
                     if (userEnergy > 0) {
-                        userBalance += 0.01;
+                        c += 0.01; // Directly update main balance
                         userEnergy -= 1;
-                        c = userBalance; // Sync with main balance
 
                         // Update UI
                         if (balanceTop) balanceTop.innerText = c.toFixed(2);
@@ -2039,7 +2037,7 @@
                 localStorage.setItem('staking_amount', (currentStake + parseFloat(amount)).toString());
                 c -= parseFloat(amount);
                 updateUI();
-                tg.showAlert(`✅ ${amount} 🪙 stakingga qo\'shildi!\n\nYillik daromad: 10%`);
+                tg.showAlert(`✅ ${amount} 🪙 stakingga qo'shildi!\n\nOylik daromad: 10%`);
             } else if (amount) {
                 tg.showAlert('❌ Noto\'g\'ri miqdor yoki yetarli emas!');
             }
@@ -2158,7 +2156,7 @@
                 social: selectedSocial,
                 duration: duration,
                 price: price,
-                status: 'pending',
+                status: 'active',
                 createdDate: new Date().toLocaleDateString(),
                 expiryDate: new Date(Date.now() + (parseInt(duration) * 24 * 60 * 60 * 1000)).toLocaleDateString()
             };

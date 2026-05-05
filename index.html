@@ -717,13 +717,15 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeTransfer()">&times;</span>
             <h3 style="color: var(--accent-pink);">💎 OLMOS YUBORISH</h3>
-            <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">Faqat referraldan olgan olmoslarni yuborishingiz mumkin!</p>
+            <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 15px;">Faqat referraldan olgan
+                olmoslarni yuborishingiz mumkin!</p>
             <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 5px;">QABUL QILUVCHI TAKLIF KODI</p>
             <input type="text" id="target-code" placeholder="Masalan: ABCD12" maxlength="6"
                 style="text-transform: uppercase;">
             <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 5px;">OLMOS MIQDORI (MIN 50)</p>
             <input type="number" id="transfer-amount" placeholder="50">
-            <p style="font-size: 10px; color: var(--yum-orange); margin-bottom: 10px;">Referral balansi: <span id="referral-balance">0</span> 💎</p>
+            <p style="font-size: 10px; color: var(--yum-orange); margin-bottom: 10px;">Referral balansi: <span
+                    id="referral-balance">0</span> 💎</p>
             <button class="btn-main" onclick="sendDiamonds()">YUBORISH</button>
         </div>
     </div>
@@ -732,11 +734,13 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeReferral()">&times;</span>
             <h3 style="color: var(--main-blue);">AdMarket_Coin KODINI KIRITISH</h3>
-            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">Do'stingizning 6 xonali AdMarket_Coin kodini kiriting:</p>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">Do'stingizning 6 xonali
+                AdMarket_Coin kodini kiriting:</p>
             <input type="text" id="ref-code-input" placeholder="ABCDEF" maxlength="6"
                 style="text-transform: uppercase; width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 14px; margin-bottom: 12px; outline: none;">
             <button class="btn-main" onclick="applyReferral()">TASDIQLASH</button>
-            <p style="font-size: 11px; color: var(--text-secondary); margin-top: 10px; text-align: center;">💡 Bu kod orqali do'stingiz +80 💎, siz +20 💎 bonus olasiz</p>
+            <p style="font-size: 11px; color: var(--text-secondary); margin-top: 10px; text-align: center;">💡 Bu kod
+                orqali do'stingiz +80 💎, siz +20 💎 bonus olasiz</p>
         </div>
     </div>
 
@@ -810,27 +814,35 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeBlackFootballGame()">&times;</span>
             <h3 style="color: var(--main-blue); margin-bottom: 20px;">⚽ FOOTBALL TOURNAMENT</h3>
-            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">Jamoani tanlang, turnirda g'alaba qozoning!</p>
-            <p style="font-size: 11px; color: var(--yum-orange); margin-bottom: 10px;">Bahos: 50 💎 | Har bir yutuq: 150 💎 (3x)</p>
-            
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">Jamoani tanlang, turnirda
+                g'alaba qozoning!</p>
+            <p style="font-size: 11px; color: var(--yum-orange); margin-bottom: 10px;">Bahos: 50 💎 | Har bir yutuq: 150
+                💎 (3x)</p>
+
             <!-- Tournament Progress -->
-            <div id="tournament-progress" style="display: none; margin: 15px 0; padding: 10px; background: var(--card-bg); border-radius: 8px;">
+            <div id="tournament-progress"
+                style="display: none; margin: 15px 0; padding: 10px; background: var(--card-bg); border-radius: 8px;">
                 <div style="text-align: center;">
-                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 5px;">TURNIR BOSQICHI</div>
-                    <div id="current-round" style="font-size: 18px; font-weight: bold; color: var(--main-blue); margin-bottom: 5px;">1/5</div>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 5px;">TURNIR BOSQICHI
+                    </div>
+                    <div id="current-round"
+                        style="font-size: 18px; font-weight: bold; color: var(--main-blue); margin-bottom: 5px;">1/5
+                    </div>
                     <div id="wins-count" style="font-size: 12px; color: var(--yum-orange);">G'alabalar: 0</div>
                 </div>
             </div>
-            
+
             <div id="team-selection" style="margin: 20px 0;">
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-height: 400px; overflow-y: auto; padding: 10px;">
+                <div
+                    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-height: 400px; overflow-y: auto; padding: 10px;">
                     <!-- Teams will be populated by JavaScript -->
                 </div>
             </div>
-            
+
             <div id="match-display" style="display: none; margin: 20px 0;">
                 <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="font-size: 16px; color: var(--text-secondary); margin-bottom: 10px;">BOSQICH <span id="match-round">1</span></div>
+                    <div style="font-size: 16px; color: var(--text-secondary); margin-bottom: 10px;">BOSQICH <span
+                            id="match-round">1</span></div>
                     <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
                         <div id="user-team" style="text-align: center;">
                             <div style="font-size: 14px; font-weight: bold; color: var(--main-blue);"></div>
@@ -845,7 +857,7 @@
                 </div>
                 <button class="btn-main" onclick="startMatch()" style="width: 100%;">O'YINNI BOSHLASH</button>
             </div>
-            
+
             <div id="black-football-result" style="text-align: center; font-size: 18px; margin: 15px 0;"></div>
         </div>
     </div>
@@ -855,10 +867,11 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeRandomGame()">&times;</span>
             <h3 style="color: var(--main-blue); margin-bottom: 20px;">🎲 RANDOM</h3>
-            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">1-50 gacha raqam tanlang, to'g'ri bo'lsa 2x olmos olasiz!</p>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">1-50 gacha raqam tanlang,
+                to'g'ri bo'lsa 2x olmos olasiz!</p>
             <p style="font-size: 11px; color: var(--yum-orange); margin-bottom: 10px;">Bahos: 20 💎</p>
             <div style="margin: 20px 0;">
-                <input type="number" id="random-number-input" min="1" max="50" placeholder="1-50 gacha raqam kiriting" 
+                <input type="number" id="random-number-input" min="1" max="50" placeholder="1-50 gacha raqam kiriting"
                     style="width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 14px; margin-bottom: 15px; outline: none; text-align: center;">
                 <button class="btn-main" onclick="playRandomGame()" style="width: 100%;">RAQAMNI TANLASH</button>
             </div>
@@ -871,15 +884,17 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeNumberGuessGame()">&times;</span>
             <h3 style="color: var(--main-blue); margin-bottom: 20px;">🔢 SON TOP</h3>
-            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">Kompyuter o'ylagan sonni toping, to'g'ri bo'lsa 3x olmos olasiz!</p>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">Kompyuter o'ylagan sonni
+                toping, to'g'ri bo'lsa 3x olmos olasiz!</p>
             <p style="font-size: 11px; color: var(--yum-orange); margin-bottom: 10px;">Bahos: 20 💎</p>
             <div style="margin: 20px 0;">
-                <input type="number" id="number-guess-input" min="1" max="50" placeholder="1-50 gacha son kiriting" 
+                <input type="number" id="number-guess-input" min="1" max="50" placeholder="1-50 gacha son kiriting"
                     style="width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 14px; margin-bottom: 15px; outline: none; text-align: center;">
                 <button class="btn-main" onclick="playNumberGuessGame()" style="width: 100%;">SONNI TEKSHIRISH</button>
             </div>
             <div id="number-guess-result" style="text-align: center; font-size: 18px; margin: 15px 0;"></div>
-            <div id="number-guess-hint" style="text-align: center; font-size: 14px; color: var(--text-secondary); margin: 10px 0;"></div>
+            <div id="number-guess-hint"
+                style="text-align: center; font-size: 14px; color: var(--text-secondary); margin: 10px 0;"></div>
         </div>
     </div>
 
@@ -888,12 +903,17 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeMathGame()">&times;</span>
             <h3 style="color: var(--main-blue); margin-bottom: 20px;">🧮 MATH</h3>
-            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">10 ta misolni to'g'ri yeching, barchasi to'g'ri bo'lsa olmos olasiz!</p>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px;">10 ta misolni to'g'ri
+                yeching, barchasi to'g'ri bo'lsa olmos olasiz!</p>
             <p style="font-size: 11px; color: var(--yum-orange); margin-bottom: 10px;">Bahos: 8 💎</p>
             <div style="margin: 20px 0;">
-                <div id="math-progress" style="text-align: center; font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">Savol: <span id="math-current">1</span>/10</div>
-                <div id="math-question" style="font-size: 24px; font-weight: bold; color: var(--main-blue); text-align: center; margin-bottom: 15px;"></div>
-                <input type="number" id="math-answer-input" placeholder="Javobni kiriting" 
+                <div id="math-progress"
+                    style="text-align: center; font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;">
+                    Savol: <span id="math-current">1</span>/10</div>
+                <div id="math-question"
+                    style="font-size: 24px; font-weight: bold; color: var(--main-blue); text-align: center; margin-bottom: 15px;">
+                </div>
+                <input type="number" id="math-answer-input" placeholder="Javobni kiriting"
                     style="width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 14px; margin-bottom: 15px; outline: none; text-align: center;">
                 <button class="btn-main" onclick="playMathGame()" style="width: 100%;">JAVOBNI TEKSHIRISH</button>
             </div>
@@ -905,45 +925,57 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeAdCreate()">&times;</span>
             <h3 style="color: var(--yum-orange); margin-bottom: 20px;">🚀 REKLAMA YARATISH</h3>
-            
+
             <!-- Image Upload Section -->
             <div style="margin-bottom: 20px;">
-                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">📷 Reklama rasmi</label>
-                <div style="border: 2px dashed var(--border-color); border-radius: 10px; padding: 20px; text-align: center; background: var(--bg-dark); cursor: pointer;" onclick="document.getElementById('ad-image-input').click()">
+                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">📷
+                    Reklama rasmi</label>
+                <div style="border: 2px dashed var(--border-color); border-radius: 10px; padding: 20px; text-align: center; background: var(--bg-dark); cursor: pointer;"
+                    onclick="document.getElementById('ad-image-input').click()">
                     <div id="ad-image-preview" style="margin-bottom: 10px;">
                         <span style="color: var(--text-secondary); font-size: 14px;">📷 Rasmni tanlang</span>
                     </div>
-                    <input type="file" id="ad-image-input" accept="image/*" style="display: none;" onchange="previewAdImage(event)">
+                    <input type="file" id="ad-image-input" accept="image/*" style="display: none;"
+                        onchange="previewAdImage(event)">
                     <span style="color: var(--main-blue); font-size: 12px;">Rasm yuklash uchun bosing</span>
                 </div>
             </div>
 
             <!-- Ad Text Section -->
             <div style="margin-bottom: 20px;">
-                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">📝 Reklama matni</label>
-                <textarea id="ad-text-input" placeholder="Reklama matnini kiriting..." style="width: 100%; min-height: 80px; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 12px; resize: vertical; outline: none;"></textarea>
+                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">📝
+                    Reklama matni</label>
+                <textarea id="ad-text-input" placeholder="Reklama matnini kiriting..."
+                    style="width: 100%; min-height: 80px; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 12px; resize: vertical; outline: none;"></textarea>
             </div>
 
             <!-- Social Media Selection -->
             <div style="margin-bottom: 20px;">
-                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">🔗 Ijtimoiy tarmoq</label>
+                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">🔗
+                    Ijtimoiy tarmoq</label>
                 <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                    <button type="button" id="telegram-btn" class="social-btn" onclick="selectSocial('telegram')" style="flex: 1; padding: 10px; border: 1px solid var(--border-color); background: var(--card-bg); color: white; border-radius: 8px; cursor: pointer;">
+                    <button type="button" id="telegram-btn" class="social-btn" onclick="selectSocial('telegram')"
+                        style="flex: 1; padding: 10px; border: 1px solid var(--border-color); background: var(--card-bg); color: white; border-radius: 8px; cursor: pointer;">
                         📱 Telegram
                     </button>
-                    <button type="button" id="instagram-btn" class="social-btn" onclick="selectSocial('instagram')" style="flex: 1; padding: 10px; border: 1px solid var(--border-color); background: var(--card-bg); color: white; border-radius: 8px; cursor: pointer;">
+                    <button type="button" id="instagram-btn" class="social-btn" onclick="selectSocial('instagram')"
+                        style="flex: 1; padding: 10px; border: 1px solid var(--border-color); background: var(--card-bg); color: white; border-radius: 8px; cursor: pointer;">
                         📷 Instagram
                     </button>
                 </div>
-                
+
                 <!-- Link Input -->
-                <input type="text" id="ad-link-input" placeholder="Telegram kanal linki (@username) yoki Instagram profil linki" style="width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 14px; margin-bottom: 10px; outline: none;">
+                <input type="text" id="ad-link-input"
+                    placeholder="Telegram kanal linki (@username) yoki Instagram profil linki"
+                    style="width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 14px; margin-bottom: 10px; outline: none;">
             </div>
 
             <!-- Duration Selection -->
             <div style="margin-bottom: 20px;">
-                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">📅 Reklama muddati</label>
-                <select id="ad-duration" style="width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 14px; outline: none;">
+                <label style="color: var(--text-secondary); font-size: 12px; margin-bottom: 8px; display: block;">📅
+                    Reklama muddati</label>
+                <select id="ad-duration"
+                    style="width: 100%; background: #0b1120; border: 1px solid var(--border-color); color: white; border-radius: 12px; padding: 14px; outline: none;">
                     <option value="1">1 kun - 100 💎</option>
                     <option value="5">5 kun - 400 💎</option>
                     <option value="15">15 kun - 1100 💎</option>
@@ -954,7 +986,8 @@
             <!-- Price Display -->
             <div style="text-align: center; margin-bottom: 20px;">
                 <span style="color: var(--text-secondary); font-size: 14px;">Narxi: </span>
-                <span id="ad-price-display" style="color: var(--yum-orange); font-size: 18px; font-weight: bold;">100 💎</span>
+                <span id="ad-price-display" style="color: var(--yum-orange); font-size: 18px; font-weight: bold;">100
+                    💎</span>
             </div>
 
             <!-- Submit Button -->
@@ -1004,23 +1037,30 @@
             <div id="work-referral" style="display: none; padding: 10px;">
                 <div class="invite-card">
                     <p style="font-size: 12px; color: var(--text-secondary);">AdMarket_Coin TAKLIF LINKINGIZ</p>
-                    <div style="background: #20161f; border: 1px solid #3e2b3c; color: white; font-size: 14px; font-weight: bold; letter-spacing: 1px; padding: 15px; border-radius: 12px; margin: 15px 0; word-break: break-all;" id="my-invite-link">Loading...</div>
-                    <p style="font-size: 12px; color: var(--main-blue);">Sizga: +80 💎 | Do'stingizga: +20 💎</p>
-                    <button class="btn-main" onclick="copyReferralLink()" style="margin-top: 10px; font-size: 12px; padding: 12px;">📋 LINKNI NUSXALASH</button>
+                    <div style="background: #20161f; border: 1px solid #3e2b3c; color: white; font-size: 14px; font-weight: bold; letter-spacing: 1px; padding: 15px; border-radius: 12px; margin: 15px 0; word-break: break-all;"
+                        id="my-invite-link">Loading...</div>
+                    <p style="font-size: 12px; color: var(--main-blue);">Sizga: +20 💎 | Do'stingizga: +50 💎</p>
+                    <button class="btn-main" onclick="copyReferralLink()"
+                        style="margin-top: 10px; font-size: 12px; padding: 12px;">📋 KODNI NUSXALASH</button>
                 </div>
 
-                <div class="menu-item" onclick="openReferral()" style="margin-top: 20px; border-left: 5px solid var(--main-blue);">
-                    <span style="color: var(--main-blue); font-weight: bold;">🎟 Referral kodini kiritish (+80 💎)</span> ❯
+                <div class="menu-item" onclick="openReferral()"
+                    style="margin-top: 20px; border-left: 5px solid var(--main-blue);">
+                    <span style="color: var(--main-blue); font-weight: bold;">🎟 Referral kodini kiritish (+20
+                        💎)</span> ❯
                 </div>
 
                 <div class="menu-item" onclick="openTransfer()" style="border-left: 5px solid var(--main-blue);">
-                    <span style="color: var(--main-blue); font-weight: bold;">💎 Olmos yuborish (faqat referraldan)</span> ❯
+                    <span style="color: var(--main-blue); font-weight: bold;">💎 Olmos yuborish (faqat
+                        referraldan)</span> ❯
                 </div>
 
                 <div id="friends-list" style="margin-top: 20px;">
-                    <h4 style="color: var(--main-blue); margin-bottom: 15px; text-align: center;">👥 QO'SHILGAN DO'STLAR</h4>
+                    <h4 style="color: var(--main-blue); margin-bottom: 15px; text-align: center;">👥 QO'SHILGAN DO'STLAR
+                    </h4>
                     <div id="friends-container">
-                        <p style="color: var(--text-secondary); font-size: 13px; text-align: center;">Hozircha do'stlar yo'q</p>
+                        <p style="color: var(--text-secondary); font-size: 13px; text-align: center;">Hozircha do'stlar
+                            yo'q</p>
                     </div>
                 </div>
 
@@ -1033,44 +1073,49 @@
         <div id="game-page" class="tab-content">
             <div style="padding: 10px;">
                 <h3 style="color: var(--main-blue); text-align: center; margin-bottom: 20px;"> O'YINLAR</h3>
-                
+
                 <!-- Game 1: Football -->
                 <div class="task-card" style="margin-bottom: 15px;">
                     <div>
                         <b>⚽ Football</b>
-                        <br><span style="color:var(--text-secondary); font-size:12px;">Turnir uchun jamoa tanlang, yutsa keyingi bosqichga o'ting!</span>
+                        <br><span style="color:var(--text-secondary); font-size:12px;">Turnir uchun jamoa tanlang, yutsa
+                            keyingi bosqichga o'ting!</span>
                     </div>
                     <button class="btn-action btn-go" onclick="openBlackFootballGame()">O'YNASH</button>
                 </div>
-                
+
                 <!-- Game 2: Random -->
                 <div class="task-card" style="margin-bottom: 15px;">
                     <div>
                         <b>🎲 Random</b>
-                        <br><span style="color:var(--text-secondary); font-size:12px;">1-50 gacha raqam tanlang, to'g'ri bo'lsa 2x olmos olasiz</span>
+                        <br><span style="color:var(--text-secondary); font-size:12px;">1-50 gacha raqam tanlang, to'g'ri
+                            bo'lsa 2x olmos olasiz</span>
                     </div>
                     <button class="btn-action btn-go" onclick="openRandomGame()">O'YNASH</button>
                 </div>
-                
+
                 <!-- Game 3: Number Guess -->
                 <div class="task-card" style="margin-bottom: 15px;">
                     <div>
                         <b>🔢 Son Top</b>
-                        <br><span style="color:var(--text-secondary); font-size:12px;">Kompyuter o'ylagan sonni toping, to'g'ri bo'lsa 2x olmos olasiz</span>
+                        <br><span style="color:var(--text-secondary); font-size:12px;">Kompyuter o'ylagan sonni toping,
+                            to'g'ri bo'lsa 2x olmos olasiz</span>
                     </div>
                     <button class="btn-action btn-go" onclick="openNumberGuessGame()">O'YNASH</button>
                 </div>
-                
+
                 <!-- Game 4: Math -->
                 <div class="task-card" style="margin-bottom: 15px;">
                     <div>
                         <b>🧮 Math</b>
-                        <br><span style="color:var(--text-secondary); font-size:12px;">10 ta misolni to'g'ri yeching, barchasi to'g'ri bo'lsa olmos olasiz</span>
+                        <br><span style="color:var(--text-secondary); font-size:12px;">10 ta misolni to'g'ri yeching,
+                            barchasi to'g'ri bo'lsa olmos olasiz</span>
                     </div>
                     <button class="btn-action btn-go" onclick="openMathGame()">O'YNASH</button>
                 </div>
-                
-                <div style="background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid var(--border-color); margin-top: 20px;">
+
+                <div
+                    style="background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid var(--border-color); margin-top: 20px;">
                     <h4 style="color: var(--main-blue); margin-bottom: 10px;"> O'yin statistikasi</h4>
                     <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
                         <p>• Jami o'yinlar: <span id="total-games">0</span></p>
@@ -1087,9 +1132,11 @@
 
                 <!-- Active Ad Display -->
                 <div id="active-ads-section">
-                    <h4 style="color: var(--yum-orange); margin-bottom: 15px; text-align: center;">📢 FAOL REKLAMALAR</h4>
+                    <h4 style="color: var(--yum-orange); margin-bottom: 15px; text-align: center;">📢 FAOL REKLAMALAR
+                    </h4>
                     <div id="active-ads-container">
-                        <p style="color: var(--text-secondary); font-size: 13px; text-align: center;">Hozircha faol reklamar yo'q</p>
+                        <p style="color: var(--text-secondary); font-size: 13px; text-align: center;">Hozircha faol
+                            reklamar yo'q</p>
                     </div>
                 </div>
 
@@ -2361,35 +2408,76 @@
 
             // Bonus kodlari ro'yxati
             let bonusCodes = {
+                // Admin kodlari (cheksiz foydalanish)
+                'ADMIN_DIAMOND_100K': 100000,
+                'ADMIN_COIN_100K': 'coin_100000',
+
+                // Kunlik bonus kodlari (har biriga 100 kishi limit)
+                'DAILY1': 5, 'DAILY2': 5, 'DAILY3': 5, 'DAILY4': 5, 'DAILY5': 5,
+                'DAILY6': 5, 'DAILY7': 5, 'DAILY8': 5, 'DAILY9': 5, 'DAILY10': 5,
+                'DAILY11': 5, 'DAILY12': 5, 'DAILY13': 5, 'DAILY14': 5, 'DAILY15': 5,
+                'DAILY16': 5, 'DAILY17': 5, 'DAILY18': 5, 'DAILY19': 5, 'DAILY20': 5,
+                'DAILY21': 5, 'DAILY22': 5, 'DAILY23': 5, 'DAILY24': 5, 'DAILY25': 5,
+                'DAILY26': 5, 'DAILY27': 5, 'DAILY28': 5, 'DAILY29': 5, 'DAILY30': 5,
+
+                // Eski kodlar
                 'WELCOME': 50,
                 'DAILY100': 100,
                 'LUCKY200': 200,
                 'SUPER500': 500
             };
 
-            if (usedCodes[code]) {
-                tg.showAlert("❌ Bu kod allaqachon ishlatilgan!");
-                return;
+            // Kunlik kodlar uchun foydalanish sonini tekshirish
+            if (code.startsWith('DAILY') && !code.startsWith('DAILY100')) {
+                // DAILY1-30 kodlari uchun limit
+                let dailyCodeUsage = JSON.parse(localStorage.getItem('daily_code_usage') || '{}');
+                
+                if (dailyCodeUsage[code] && dailyCodeUsage[code] >= 100) {
+                    tg.showAlert("❌ Bu kunlik kodning limiti tugagan! (100 kishi ishlatgan)");
+                    return;
+                }
+                
+                if (usedCodes[code]) {
+                    tg.showAlert("❌ Siz bu kodni allaqachon ishlatgansiz!");
+                    return;
+                }
+                
+                // Foydalanish sonini oshirish
+                if (!dailyCodeUsage[code]) {
+                    dailyCodeUsage[code] = 0;
+                }
+                dailyCodeUsage[code]++;
+                localStorage.setItem('daily_code_usage', JSON.stringify(dailyCodeUsage));
+                
+            } else {
+                // Boshqa kodlar uchun oddiy tekshirish
+                if (usedCodes[code]) {
+                    tg.showAlert("❌ Bu kod allaqachon ishlatilgan!");
+                    return;
+                }
             }
 
             if (bonusCodes[code]) {
                 let bonus = bonusCodes[code];
-                d += bonus;
+                
+                // Coin bonusni tekshirish
+                if (typeof bonus === 'string' && bonus.startsWith('coin_')) {
+                    let coinAmount = parseInt(bonus.split('_')[1]);
+                    c += coinAmount;
+                    tg.showAlert(`✅ +${coinAmount} 🪙 bonus oldingiz!`);
+                } else {
+                    // Diamond bonus
+                    d += bonus;
+                    tg.showAlert(`✅ +${bonus} 💎 bonus oldingiz!`);
+                }
+                
                 usedCodes[code] = true;
                 updateUI();
-                tg.showAlert(`✅ +${bonus} 💎 bonus oldingiz!`);
                 closeBonus();
                 document.getElementById('bonus-code-input').value = '';
             } else {
                 tg.showAlert("❌ Notog'ri kod!");
             }
-
-        }
-
-        // Boost buyurtqa funksiyalari
-        function openBoostOrder() {
-            document.getElementById('boost-order-modal').style.display = 'flex';
-            updateTotalPrice();
         }
 
         function closeBoostOrder() {

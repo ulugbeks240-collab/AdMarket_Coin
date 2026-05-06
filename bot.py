@@ -1,40 +1,33 @@
-import sqlite3
 import json
 import datetime
+import os
 from aiogram import Bot, Dispatcher, types, executor
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+from pymongo import MongoClient
+from bson import ObjectId
+from flask import Flask, send_from_directory
 
 # --- SOZLAMALAR ---
 API_TOKEN = '8444256532:AAGmpavcAWq_hR0mBhh_KOxf6CVJlq_UkM4'
-WEB_APP_URL = "https://husinbayxudayberganov8807-hub.github.io/AdMarket_Uz/"
+WEB_APP_URL = os.environ.get('WEB_APP_URL', "https://your-app.onrender.com")  # Render URL ni shu yerga qo'ying
+
+# MongoDB connection
+MONGO_URL = os.environ.get('MONGO_URL', "mongodb+srv://javlonbekqadamov11111_db_user:javlonbekqadamov11111_db_user@cluster0.4pjg413.mongodb.net/?appName=Cluster0")
+client = MongoClient(MONGO_URL)
+db = client['admarket_db']
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
+# Flask app for serving index.html
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return send_from_directory('.', 'index.html')
+
 # --- MA'LUMOTLAR BAZASI ---
-def init_db():
-    conn = sqlite3.connect('admarket.db')
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS users 
-                      (user_id INTEGER PRIMARY KEY, balance INTEGER DEFAULT 100, 
-                       yum_balance REAL DEFAULT 0.0, yum_wallet TEXT, 
-                       staking_amount REAL DEFAULT 0.0, mining_power INTEGER DEFAULT 1)''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS ads 
-                      (id INTEGER PRIMARY KEY AUTOINCREMENT, owner_id INTEGER, 
-                       channel_link TEXT, remaining_subs INTEGER, 
-                       price_type TEXT DEFAULT 'diamond', price_amount INTEGER)''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS completed_tasks 
-                      (user_id, task_id TEXT, reward_type TEXT DEFAULT 'diamond', 
-                       reward_amount INTEGER DEFAULT 10, PRIMARY KEY (user_id, task_id))''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS yum_transactions 
-                      (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER, 
-                       transaction_type TEXT, amount REAL, description TEXT, 
-                       timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS mining_rewards 
-                      (user_id INTEGER, last_mining DATETIME, 
-                       daily_mining REAL DEFAULT 0.0, PRIMARY KEY (user_id))''')
-    conn.commit()
-    conn.close()
+# MongoDB is schemaless, no init needed
 
 # --- ASOSIY START KOMANDASI ---
 @dp.message_handler(commands=['start'])
@@ -43,37 +36,38 @@ async def start_command(message: types.Message):
     # message.get_args() ni xavfsiz olish (Aiogram 2.x uslubi)
     args = message.get_args()
 
-    conn = sqlite3.connect('admarket.db')
-    cursor = conn.cursor()
-
     # 1. Foydalanuvchini ro'yxatga olish va Referral tizimi
-    cursor.execute("SELECT user_id FROM users WHERE user_id = ?", (user_id,))
-    if cursor.fetchone() is None:
+    user = db.users.find_one({"user_id": user_id})
+    if user is None:
         # Yangi userga 30 diamond + 50 YUM bonus
-        cursor.execute("INSERT INTO users (user_id, balance, yum_balance) VALUES (?, ?, ?)", (user_id, 30, 50.0))
+        db.users.insert_one({
+            "user_id": user_id,
+            "balance": 30,
+            "yum_balance": 50.0,
+            "yum_wallet": None,
+            "staking_amount": 0.0,
+            "mining_power": 1
+        })
         
         # Taklif qilgan odamga +80
         if args and args.isdigit() and int(args) != user_id:
             referrer_id = int(args)
-            cursor.execute("UPDATE users SET balance = balance + 80, yum_balance = yum_balance + 20 WHERE user_id = ?", (referrer_id,))
+            db.users.update_one({"user_id": referrer_id}, {"$inc": {"balance": 80, "yum_balance": 20}})
             try:
                 await bot.send_message(referrer_id, "🎉 **Do'stingiz qo'shildi!**\nSizga +80 💎 + 20 🪙 Coin bonus berildi.")
             except: pass
-        conn.commit()
 
     # 2. Ma'lumotlarni yig'ish
-    cursor.execute("SELECT balance, yum_balance, yum_wallet FROM users WHERE user_id = ?", (user_id,))
-    user_data = cursor.fetchone()
-    user_balance = user_data[0]
-    yum_balance = user_data[1]
-    yum_wallet = user_data[2] or "Not set"
+    user = db.users.find_one({"user_id": user_id})
+    user_balance = user.get("balance", 0)
+    yum_balance = user.get("yum_balance", 0.0)
+    yum_wallet = user.get("yum_wallet", "Not set")
     
-    cursor.execute("SELECT channel_link, remaining_subs FROM ads WHERE owner_id = ?", (user_id,))
-    my_ads = cursor.fetchall()
+    my_ads_cursor = db.ads.find({"owner_id": user_id})
+    my_ads = [{"id": str(ad["_id"]), "channel_link": ad["channel_link"], "remaining_subs": ad["remaining_subs"]} for ad in my_ads_cursor]
     
-    cursor.execute("SELECT id, channel_link FROM ads WHERE owner_id != ?", (user_id,))
-    active_tasks = cursor.fetchall() 
-    conn.close()
+    active_tasks_cursor = db.ads.find({"owner_id": {"$ne": user_id}})
+    active_tasks = [{"id": str(ad["_id"]), "channel_link": ad["channel_link"]} for ad in active_tasks_cursor]
 
     # 3. UI yuborish (Vizual qism)
     photo_url = "https://i.postimg.cc/RVDdbP5b/6ee3a319-1706-4d24-8b16-86212c853a63.png"
@@ -121,27 +115,23 @@ async def get_app_data(message: types.Message):
     try:
         data = json.loads(message.web_app_data.data)
         user_id = message.from_user.id
-        conn = sqlite3.connect('admarket.db')
-        cursor = conn.cursor()
 
         if data.get('action') == "check_task":
             task_id = data.get('task_id')
             reward_type = data.get('reward_type', 'diamond')
-            cursor.execute("SELECT 1 FROM completed_tasks WHERE user_id = ? AND task_id = ?", (user_id, task_id))
-            if cursor.fetchone():
+            if db.completed_tasks.find_one({"user_id": user_id, "task_id": task_id}):
                 await message.answer("❌ Bu vazifani bajargansiz!")
             else:
-                cursor.execute("UPDATE ads SET remaining_subs = remaining_subs - 1 WHERE id = ?", (task_id,))
+                db.ads.update_one({"_id": ObjectId(task_id)}, {"$inc": {"remaining_subs": -1}})
                 
                 if reward_type == 'yum':
-                    cursor.execute("UPDATE users SET yum_balance = yum_balance + 5 WHERE user_id = ?", (user_id,))
-                    cursor.execute("INSERT INTO completed_tasks (user_id, task_id, reward_type, reward_amount) VALUES (?, ?, ?, ?)", (user_id, task_id, 'yum', 5))
+                    db.users.update_one({"user_id": user_id}, {"$inc": {"yum_balance": 5}})
+                    db.completed_tasks.insert_one({"user_id": user_id, "task_id": task_id, "reward_type": 'yum', "reward_amount": 5})
                     await message.answer("✅ Vazifa bajarildi! +5 🪙")
                 else:
-                    cursor.execute("UPDATE users SET balance = balance + 10 WHERE user_id = ?", (user_id,))
-                    cursor.execute("INSERT INTO completed_tasks (user_id, task_id, reward_type, reward_amount) VALUES (?, ?, ?, ?)", (user_id, task_id, 'diamond', 10))
+                    db.users.update_one({"user_id": user_id}, {"$inc": {"balance": 10}})
+                    db.completed_tasks.insert_one({"user_id": user_id, "task_id": task_id, "reward_type": 'diamond', "reward_amount": 10})
                     await message.answer("✅ Vazifa bajarildi! +10 💎")
-                conn.commit()
 
         elif data.get('action') == "create_task":
             cost = int(data.get('cost', 0))
@@ -150,29 +140,34 @@ async def get_app_data(message: types.Message):
             price_type = data.get('price_type', 'diamond')
             
             if price_type == 'yum':
-                cursor.execute("SELECT yum_balance FROM users WHERE user_id = ?", (user_id,))
-                user_data = cursor.fetchone()
-                if user_data and user_data[0] >= cost:
-                    cursor.execute("UPDATE users SET yum_balance = yum_balance - ? WHERE user_id = ?", (cost, user_id))
-                    cursor.execute("INSERT INTO ads (owner_id, channel_link, remaining_subs, price_type, price_amount) VALUES (?, ?, ?, ?, ?)", 
-                                   (user_id, link, amount, 'yum', cost))
-                    conn.commit()
+                user = db.users.find_one({"user_id": user_id})
+                if user and user.get('yum_balance', 0) >= cost:
+                    db.users.update_one({"user_id": user_id}, {"$inc": {"yum_balance": -cost}})
+                    db.ads.insert_one({
+                        "owner_id": user_id,
+                        "channel_link": link,
+                        "remaining_subs": amount,
+                        "price_type": 'yum',
+                        "price_amount": cost
+                    })
                     await message.answer(f"✅ Reklama qabul qilindi!\nKanal: {link}\nTo'lov: {cost} 🪙 Coin")
                 else:
                     await message.answer("❌ Coiningiz yetarli emas!")
             else:
-                cursor.execute("SELECT balance FROM users WHERE user_id = ?", (user_id,))
-                user_data = cursor.fetchone()
-                if user_data and user_data[0] >= cost:
-                    cursor.execute("UPDATE users SET balance = balance - ? WHERE user_id = ?", (cost, user_id))
-                    cursor.execute("INSERT INTO ads (owner_id, channel_link, remaining_subs, price_type, price_amount) VALUES (?, ?, ?, ?, ?)", 
-                                   (user_id, link, amount, 'diamond', cost))
-                    conn.commit()
+                user = db.users.find_one({"user_id": user_id})
+                if user and user.get('balance', 0) >= cost:
+                    db.users.update_one({"user_id": user_id}, {"$inc": {"balance": -cost}})
+                    db.ads.insert_one({
+                        "owner_id": user_id,
+                        "channel_link": link,
+                        "remaining_subs": amount,
+                        "price_type": 'diamond',
+                        "price_amount": cost
+                    })
                     await message.answer(f"✅ Reklama qabul qilindi!\nKanal: {link}\nTo'lov: {cost} 💎")
                 else:
                     await message.answer("❌ Olmosingiz yetarli emas!")
         
-        conn.close()
     except Exception as e:
         await message.answer(f"⚠️ Xatolik: {e}")
 
@@ -180,18 +175,15 @@ async def get_app_data(message: types.Message):
 @dp.message_handler(commands=['wallet'])
 async def wallet_command(message: types.Message):
     user_id = message.from_user.id
-    conn = sqlite3.connect('admarket.db')
-    cursor = conn.cursor()
     
-    cursor.execute("SELECT yum_wallet FROM users WHERE user_id = ?", (user_id,))
-    wallet = cursor.fetchone()[0]
+    user = db.users.find_one({"user_id": user_id})
+    wallet = user.get('yum_wallet') if user else None
     
     if wallet:
         await message.answer(f"💳 **Sizning Coin walletingiz:**\n`{wallet}`", parse_mode="Markdown")
     else:
         await message.answer("❌ Wallet ulanmagan. Wallet ulash uchun /setwallet komandasini yuboring.")
     
-    conn.close()
 
 @dp.message_handler(commands=['setwallet'])
 async def set_wallet_command(message: types.Message):
@@ -202,30 +194,22 @@ async def set_wallet_command(message: types.Message):
         await message.answer("📝 **Foydalanish:**\n`/setwallet <wallet_address>`\n\nMasalan: `/setwallet 0x1234...abcd`", parse_mode="Markdown")
         return
     
-    conn = sqlite3.connect('admarket.db')
-    cursor = conn.cursor()
-    
-    cursor.execute("UPDATE users SET yum_wallet = ? WHERE user_id = ?", (args, user_id))
-    conn.commit()
-    conn.close()
+    db.users.update_one({"user_id": user_id}, {"$set": {"yum_wallet": args}})
     
     await message.answer(f"✅ **Coin wallet muvaffaqiyatli ulandi!**\n\n📍 **Wallet manzili:**\n`{args}`", parse_mode="Markdown")
 
 @dp.message_handler(commands=['withdraw'])
 async def withdraw_command(message: types.Message):
     user_id = message.from_user.id
-    conn = sqlite3.connect('admarket.db')
-    cursor = conn.cursor()
     
-    cursor.execute("SELECT yum_balance, yum_wallet FROM users WHERE user_id = ?", (user_id,))
-    result = cursor.fetchone()
+    user = db.users.find_one({"user_id": user_id})
     
-    if not result:
+    if not user:
         await message.answer("❌ Xatolik! Iltimos, qayta urinib ko'ring.")
         return
     
-    yum_balance = result[0]
-    yum_wallet = result[1]
+    yum_balance = user.get('yum_balance', 0)
+    yum_wallet = user.get('yum_wallet')
     
     if not yum_wallet:
         await message.answer("❌ Avval wallet ulashingiz kerak! /setwallet komandasidan foydalaning.")
@@ -236,10 +220,13 @@ async def withdraw_command(message: types.Message):
         return
     
     # Chiqarish so'rovini yuborish (admin tasdiqisiz)
-    cursor.execute("INSERT INTO yum_transactions (user_id, transaction_type, amount, description) VALUES (?, ?, ?, ?)", 
-                   (user_id, 'withdraw', yum_balance, f'Wallet: {yum_wallet}'))
-    conn.commit()
-    conn.close()
+    db.yum_transactions.insert_one({
+        "user_id": user_id,
+        "transaction_type": 'withdraw',
+        "amount": yum_balance,
+        "description": f'Wallet: {yum_wallet}',
+        "timestamp": datetime.datetime.now()
+    })
     
     await message.answer(f"📤 **Chiqarish so'rovi yuborildi!**\n\n💰 **Miqdor:** `{yum_balance:.2f}` 🪙\n💳 **Wallet:** `{yum_wallet}`\n\n⏰ So'rov ko'rib chiqilmoqda...", parse_mode="Markdown")
 
@@ -248,6 +235,5 @@ async def guide_handler(call: types.CallbackQuery):
     await call.answer("Qo'llanma: Vazifalar bajarib  va  ishlang, wallet ulang, pul chiqaring, staking qiling!", show_alert=True)
 
 if __name__ == '__main__':
-    init_db()
     print("Bot muvaffaqiyatli ishga tushdi (Obunasiz rejim)!")
     executor.start_polling(dp, skip_updates=True)

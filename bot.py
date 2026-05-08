@@ -6,10 +6,13 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from pymongo import MongoClient
 from bson import ObjectId
 from flask import Flask, send_from_directory
+from dotenv import load_dotenv
 
 # --- SOZLAMALAR ---
-API_TOKEN = '8444256532:AAGmpavcAWq_hR0mBhh_KOxf6CVJlq_UkM4'
-WEB_APP_URL = os.environ.get('WEB_APP_URL', "https://your-app.onrender.com")  # Render URL ni shu yerga qo'ying
+load_dotenv()
+
+API_TOKEN = os.environ.get('API_TOKEN', '8444256532:AAGmpavcAWq_hR0mBhh_KOxf6CVJlq_UkM4')
+WEB_APP_URL = os.environ.get('WEB_APP_URL', "https://your-app-name.onrender.com")  # Render URL ni shu yerga qo'ying
 
 # MongoDB connection
 MONGO_URL = os.environ.get('MONGO_URL', "mongodb+srv://javlonbekqadamov11111_db_user:javlonbekqadamov11111_db_user@cluster0.4pjg413.mongodb.net/?appName=Cluster0")
